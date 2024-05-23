@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ingress-dev
+  name: plantilla-vue-qa
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: git@gitlab.com:developers.edisaac/devops/kubernetes-configuration.git
-    targetRevision: SNAPSHOT
-    path: dev/config/ingress
+    targetRevision: RELEASE
+    path: qa/apps/plantilla-vue
   destination:
-    name: dev-cluster
-    namespace: dev
+    name: qa-cluster
+    namespace: qa
   syncPolicy:
     automated:
       prune: true

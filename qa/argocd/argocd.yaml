@@ -1,16 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: application-config-dev
+  name: argocd-prd
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: git@github.com:edisaac/argocd-configuration.git
-    targetRevision: SNAPSHOT
-    path: dev/argocd
+    repoURL: git@gitlab.com:developers.edisaac/devops/kubernetes-configuration.git
+    targetRevision: RELEASE
+    path: qa/config/argocd
   destination:
-    name: dev-cluster
+    name: qa-cluster
     namespace: argocd
   syncPolicy:
     automated:

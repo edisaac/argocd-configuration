@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@gitlab.com:developers.edisaac/devops/kubernetes-configuration.git
+    repoURL: git@github.com:edisaac/kubernetes-configuration.git
     targetRevision: SNAPSHOT
     path: dev/config/argocd
   destination:

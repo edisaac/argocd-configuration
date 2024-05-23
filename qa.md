@@ -167,7 +167,7 @@ Registrarlo en gitlab con el usuario que tenga permisos sobre el respositorio de
 ##### Configurar repo en kubernetes-configuration con shh key
 
 ```shell
-argocd repo add git@gitlab.com:developers.edisaac/devops/kubernetes-configuration.git --name  kubernetes-configuration --ssh-private-key-path <<ruta local del archivo key>>
+argocd repo add git@github.com:edisaac/kubernetes-configuration.git --name  kubernetes-configuration --ssh-private-key-path <<ruta local del archivo key>>
 ```
 
 ##### Configurar repo en argocd-configuration con shh key

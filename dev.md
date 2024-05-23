@@ -49,7 +49,7 @@ kubectl create ns dev
 #### Crear configuracion de docker registry
 
 ```bash
-kubectl create secret docker-registry regcred --docker-server=registry.gitlab.com --docker-username=edisaac.mejia@gmail.com --docker-password=w0lfsrequiem -n dev
+kubectl create secret docker-registry regcred --docker-server=registry.hub.docker.com --docker-username=edisaac.mejia@gmail.com --docker-password=$PASSWORD_DOCKER -n dev
 ```
 
 ### Configuracion Ingress Traefik DEV

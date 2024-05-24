@@ -32,6 +32,9 @@ gcloud container clusters create dev-cluster \
 --scopes "https://www.googleapis.com/auth/source.read_write,cloud-platform" \
 --cluster-version 1.28 \
 --enable-ip-alias 
+
+## gcloud container clusters delete dev-cluster --zone us-east1-b
+
 ```
 
 #### Conectar al proyecto edisaac dev
@@ -61,6 +64,9 @@ gcloud compute addresses create dev-static-ip-ingress  --region=us-east1
 
 gcloud compute addresses describe dev-static-ip-ingress  --region=us-east1 \
   --format='value(address)'
+
+#gcloud compute addresses delete dev-static-ip-ingress --region=us-east1
+  
 ```
 
 ##### Modificar el loadBalancerIP en la configuracion de DEV
@@ -85,6 +91,9 @@ spec:
 mkcert '*.edisaac.link'
 openssl x509 -outform pem -in _wildcard.edisaac.link.pem -out _wildcard.edisaac.link.crt
 
+cp _wildcard.edisaac.link.crt /usr/local/share/ca-certificates/_wildcard.edisaac.link.crt
+sudo update-ca-certificates
+
 
 kubectl create secret tls edisaac-tls-secret -n dev \
   --cert=<<ruta local del archivo crt>> \
@@ -98,19 +107,24 @@ ejemplo
 kubectl create secret tls edisaac-tls-secret -n dev  \
   --cert=_wildcard.edisaac.link.crt \
   --key=_wildcard.edisaac.link-key.pem
+
+kubectl create secret tls edisaac-tls-secret -n argocd  \
+  --cert=_wildcard.edisaac.link.crt \
+  --key=_wildcard.edisaac.link-key.pem  
 ```
 
 Crear un disco para el traefik
 
 ```shell
 gcloud compute disks create --size=10GB --zone=us-east1-b traefik-persistent
+#gcloud compute disks delete traefik-persistent --zone=us-east1-b
+
 ```
 
 
 
 ## Instalar Argos en cluster prd
 
-##### Conectar al proyecto edisaac PROD
 
 ```shell
 gcloud container clusters get-credentials dev-cluster --zone us-east1-b --project dockers-edisaac-dev
@@ -149,11 +163,13 @@ Agregar opcion insecure al deploy de argocd-server
 kubectl apply -n argocd -f https://raw.githubusercontent.com/edisaac/argo-cd/master/manifests/install.yaml
 
 #kubectl patch  deployment argocd-server -n argocd  --type json -p='[{"op": "add", "path": "/spec/template/spec/containers/0/command/1", "value": "--insecure"}]'
+
+#kubectl patch  deployment argocd-server -n argocd  --type json -p='[{"op": "remove", "path": "/spec/template/spec/containers/0/command/1"}]'
+
 ```
 
 Ejemplo de como quitar la linea insecure
 
-kubectl patch  deployment argocd-server -n argocd  --type json -p='[{"op": "remove", "path": "/spec/template/spec/containers/0/command/1"}]'
 
 ### Abrir puerto local a argocd
 
@@ -233,3 +249,9 @@ una vez termine de cargar ingresar por
 
 https://argocddev.edisaac.link/
 
+
+
+
+#
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml

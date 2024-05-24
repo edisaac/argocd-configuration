@@ -73,14 +73,9 @@ gcloud compute addresses describe dev-static-ip-ingress  --region=us-east1 \
 
 con el ip creado en el branch **SNAPSHOT** de **developers.edisaac/devops/kubernetes-configuration.git**
 
-modificar el archivo **/dev/config/ingress/traefik.yaml**
+modificar el archivo **/dev/config/ingress/nginx.yaml**
 
 ```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: traefik
-spec:
   loadBalancerIP: <<dev-static-ip-ingress>>
 ```
 
@@ -108,9 +103,6 @@ kubectl create secret tls edisaac-tls-secret -n dev  \
   --cert=_wildcard.edisaac.link.crt \
   --key=_wildcard.edisaac.link-key.pem
 
-kubectl create secret tls edisaac-tls-secret -n argocd  \
-  --cert=_wildcard.edisaac.link.crt \
-  --key=_wildcard.edisaac.link-key.pem  
 ```
 
 Crear un disco para el traefik
@@ -136,7 +128,13 @@ gcloud container clusters get-credentials dev-cluster --zone us-east1-b --projec
 kubectl config get-contexts
 kubectl config use-context <<DEV CONTEXT NAME>>
 kubectl create namespace argocd
+
 kubectl apply -n argocd -f https://raw.githubusercontent.com/edisaac/argo-cd/master/manifests/install.yaml
+
+
+kubectl create secret tls edisaac-tls-secret -n argocd  \
+  --cert=_wildcard.edisaac.link.crt \
+  --key=_wildcard.edisaac.link-key.pem  
 ```
 
 Ver documentacion en https://argoproj.github.io/argo-cd/getting_started/#1-install-argo-cd
@@ -179,14 +177,15 @@ kubectl port-forward svc/argocd-server -n argocd 8888:80
 
 ### Ingresar a argo con usuario admin
 
-```shell
-argocd login 127.0.0.1:8888
-```
+
 
 para  obtener la contraseña inicial
 
 ```shell
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+```shell
+argocd login 127.0.0.1:8888
 ```
 
 para cambiar de contraseña ver  
@@ -255,3 +254,6 @@ https://argocddev.edisaac.link/
 #
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/cloud/deploy.yaml
+

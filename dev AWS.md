@@ -1,35 +1,50 @@
 
 
-install aws cli
+# Install y configurar aws cli
+
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+```bash
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo apt install unzip
+unzip awscliv2.zip
+sudo ./aws/install
+
+aws --version
+aws configure
+```
+
+# Install kubectl
+
+https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+
+```bash
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+kubectl version --client
+```
+
+para conectarse a un cluster
+aws eks update-kubeconfig --region region-code --name my-cluster
+
+# Install eksctl
+
+https://eksctl.io/installation/
+
+```bash
+# for ARM systems, set ARCH to: `arm64`, `armv6` or `armv7`
+ARCH=amd64
+PLATFORM=$(uname -s)_$ARCH
+
+curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
+
+tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
+sudo mv /tmp/eksctl /usr/local/bin
 
 
-
-install kubectl
-
-install eksctl
-
-
-
-
-aws ec2 create-key-pair --key-name eksKeyPair --query 'KeyMaterial' --output text > eksKeyPair.pem
-
-
-
-
-eksctl create cluster --name my-cluster --region us-east-1 \
---nodegroup-name my-nodes --node-type t3.medium --nodes 1 \
---with-oidc \
---ssh-access \
---ssh-public-key eksKeyPair
- 
-
-
-
-eksctl utils write-kubeconfig --cluster my-cluster
-
-# BORRAR eksctl delete cluster --name my-cluster --region us-east-1
-
-
+eksctl version
+```
 
 
 ## install helm
@@ -44,6 +59,53 @@ chmod 700 get_helm.sh
 
 
 
+# Crear Cluster
+
+
+
+```
+eksctl create cluster --name my-cluster --region us-east-1 \
+--nodegroup-name my-nodes --node-type t3.medium --nodes 1 \
+--version 1.29
+
+eksctl utils write-kubeconfig --cluster my-cluster
+```
+
+
+
+\
+--with-oidc \
+--ssh-access \
+--ssh-public-key eksKeyPair
+
+#aws ec2 create-key-pair --key-name eksKeyPair --query 'KeyMaterial' --output text > eksKeyPair.pem
+
+```bash
+#BORRAR cluster
+# eksctl delete cluster --name my-cluster --region us-east-1
+```
+
+
+
+# Install Argos CLI
+
+```shell
+# sudo passwd ubuntu  #para multippass
+#install Brew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+brew install argocd
+```
+
+Ver documentacion en https://argoproj.github.io/argo-cd/cli_installation/#linux-and-wsl
+
+Ver documentacion de instalar brew https://www.codegrepper.com/code-examples/shell/install+brew+ubuntu+20.04
+
+
+
+# Instalar ingress en Cluster
+
+```
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 
 
@@ -51,6 +113,10 @@ helm upgrade --install ingress-nginx ingress-nginx \
              --repo https://kubernetes.github.io/ingress-nginx \
              --namespace ingress-nginx \
              --create-namespace
+```
+
+
+
 
 
 #### Crear namaespace dev
@@ -89,7 +155,7 @@ kubectl create secret tls edisaac-tls-secret -n dev  \
 ```
 
  
- 
+
 
 ### Install Argos
 
@@ -99,6 +165,9 @@ kubectl create secret tls edisaac-tls-secret -n dev  \
 
 kubectl create namespace argocd
 
+#instalar version de ARGOCD
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+#CONFIGURAR EN MODO INSECURE
 kubectl apply -n argocd -f https://raw.githubusercontent.com/edisaac/argo-cd/master/manifests/install.yaml
 
 
@@ -110,30 +179,11 @@ kubectl create secret tls edisaac-tls-secret -n argocd  \
 
 Ver documentacion en https://argoproj.github.io/argo-cd/getting_started/#1-install-argo-cd
 
-### Install Argos CLI
 
-```shell
-#install Brew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-brew install argocd
-```
+# CAMBIAR A KUBE LOCAL
 
-Ver documentacion en https://argoproj.github.io/argo-cd/cli_installation/#linux-and-wsl
 
-Ver documentacion de instalar brew https://www.codegrepper.com/code-examples/shell/install+brew+ubuntu+20.04
-
-### Modificar la imagen para que no use TLS interno
-
-Agregar opcion insecure al deploy de argocd-server
-
-```shell
-
-kubectl apply -n argocd -f https://raw.githubusercontent.com/edisaac/argo-cd/master/manifests/install.yaml
- 
-```
-
-Ejemplo de como quitar la linea insecure
 
 
 ### Abrir puerto local a argocd

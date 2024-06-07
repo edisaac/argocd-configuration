@@ -63,7 +63,7 @@ chmod 700 get_helm.sh
 
 
 
-```
+```bash
 eksctl create cluster --name my-cluster --region us-east-1 \
 --nodegroup-name my-nodes --node-type t3.medium --nodes 1 \
 --version 1.29
@@ -72,13 +72,6 @@ eksctl utils write-kubeconfig --cluster my-cluster
 ```
 
 
-
-\
---with-oidc \
---ssh-access \
---ssh-public-key eksKeyPair
-
-#aws ec2 create-key-pair --key-name eksKeyPair --query 'KeyMaterial' --output text > eksKeyPair.pem
 
 ```bash
 #BORRAR cluster
@@ -124,6 +117,14 @@ helm upgrade --install ingress-nginx ingress-nginx \
 ```shell
 kubectl create ns dev
 ```
+
+
+
+# CAMBIAR a otro equipo
+
+aws configure
+
+eksctl utils write-kubeconfig --cluster my-cluster
 
 
 
@@ -265,12 +266,5 @@ una vez termine de cargar ingresar por
 
 https://argocddev.edisaac.link/
 
-
-
-
-#
-
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
-
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/cloud/deploy.yaml
+ 
 

@@ -108,10 +108,6 @@ helm upgrade --install ingress-nginx ingress-nginx \
              --create-namespace
 ```
 
-
-
-
-
 #### Crear namaespace dev
 
 ```shell
@@ -181,12 +177,6 @@ kubectl create secret tls edisaac-tls-secret -n argocd  \
 Ver documentacion en https://argoproj.github.io/argo-cd/getting_started/#1-install-argo-cd
 
 
-
-# CAMBIAR A KUBE LOCAL
-
-
-
-
 ### Abrir puerto local a argocd
 
 ```shell
@@ -251,7 +241,7 @@ argocd cluster add <<CLUSTER NAME DEV>> --name dev-cluster
 ```
 
 ### Aplicar el Application Argos Inicial
-
+Tiene que estar en la carpeta del repositorio de argocd-configuration
 ```shell
 kubectl apply -f ./dev/inicial.yaml
 ```
@@ -262,9 +252,23 @@ Verificar en
 
 http://localhost:8888/
 
+para ingresar se debe publicar ,  para publicar local se debe modificar el archivo 
+agregar
+54.146.95.63 argocddev.edisaac.link nodejsappdev.edisaac.link
+para sacar la ip, se debe ver el cname del loadbalancer en AWS  y hacer ping 
+
+en linux
+/etc/hosts
+en windows
+ C:\Windows\System32\drivers\etc
+
+
+```shell
 una vez termine de cargar ingresar por 
 
 https://argocddev.edisaac.link/
+
+
 
  
 

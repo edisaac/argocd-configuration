@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: git@github.com:edisaac/kubernetes-configuration.git
     targetRevision: SNAPSHOT
-    path: dev/apps/nodejsapp
+    path: dev/apps/nodejsappx
   destination:
     name: dev-cluster
     namespace: dev
